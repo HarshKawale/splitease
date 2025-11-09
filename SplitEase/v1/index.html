@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SplitEase</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="animated-bg"></div>
+  <div class="floating-orb orb-1"></div>
+  <div class="floating-orb orb-2"></div>
+  <div class="floating-orb orb-3"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg glass-navbar fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold gradient-text" href="index.html">
+        <i class="bi bi-piggy-bank me-2"></i>SplitEase
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" onclick="showPage('home')" id="nav-home">
+              <i class="bi bi-house me-1"></i>Dashboard
+            </a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="activity.html" id="nav-activity">
+              <i class="bi bi-clock-history me-1"></i>Recent Activity
+            </a>
+          </li> -->
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="friends.html" id="nav-friends">
+              <i class="bi bi-people me-1"></i>Friends
+            </a>
+          </li> -->
+          <li class="nav-item">
+            <a href="group-detail.html"></a>
+
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <!-- <button id="darkModeToggle" class="dark-toggle me-3 d-flex align-items-center">
+            <i class="bi bi-moon-fill me-2"></i>
+            <span>Dark</span>
+          </button> -->
+          <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i>
+              <span id="navUserName">User</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
+              <li><a class="dropdown-item" href="login.html" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5 mt-5 position-relative" style="z-index: 10;">
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page-content">
+      <!-- Welcome Section -->
+      <div class="glass-card p-4 p-md-5 mb-4">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="display-4 fw-bold gradient-text mb-3" id="welcomeTitle">Welcome back!</h1>
+            <p class="lead text-muted">Manage your shared expenses and keep track of who owes what.</p>
+          </div>
+          <div class="col-md-4 text-center">
+            <button class="btn btn-gradient btn-lg" onclick="showCreateGroupModal()">
+              <i class="bi bi-plus-circle me-2"></i>Create New Group
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center">
+            <div class="h2 text-success fw-bold mb-2" id="totalOwed"></div>
+            <div class="text-muted">You are owed</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center">
+            <div class="h2 text-danger fw-bold mb-2" id="totalOwes"></div>
+            <div class="text-muted">You owe</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center">
+            <div class="h2 gradient-text fw-bold mb-2" id="totalGroups"></div>
+            <div class="text-muted">Active groups</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Wallet Section: Add Money -->
+      <div class="glass-card p-3 mb-4">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <i class="bi bi-wallet2 fs-4 text-success"></i>
+          <strong class="me-2">Wallet</strong>
+          <input type="number" min="1" id="addWalletAmount" class="form-control" style="max-width: 200px;" placeholder="Amount" />
+          <button class="btn btn-success" id="addWalletBtn">Add Money</button>
+          <span class="badge text-bg-success" id="walletBadge">Wallet: ₹0</span>
+        </div>
+      </div>
+      
+      <!-- Groups Section -->
+      <div class="glass-card p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="h3 fw-bold gradient-text d-flex align-items-center mb-0">
+            <div class="bg-primary rounded-pill me-3" style="width: 4px; height: 30px;"></div>
+            Your Groups
+          </h2>
+        </div>
+        <div id="groupsList" class="row g-4">
+          <!-- Dynamic groups will render here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Group Modal -->
+  <div class="modal fade" id="createGroupModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content glass-modal">
+        <div class="modal-header border-0">
+          <h5 class="modal-title gradient-text fw-bold">Create New Group</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="createGroupForm">
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Group Name</label>
+              <input type="text" id="newGroupName" class="form-control gradient-input" placeholder="Enter group name" required/>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Group Type</label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <input type="radio" class="btn-check" name="groupType" id="tripType" value="trip" autocomplete="off" checked/>
+                  <label class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center p-3" for="tripType">
+                    <i class="bi bi-airplane fs-2 mb-2"></i>
+                    <span class="fw-semibold">Trip</span>
+                    <small class="text-muted">Travel expenses</small>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="radio" class="btn-check" name="groupType" id="homeType" value="home" autocomplete="off"/>
+                  <label class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center p-3" for="homeType">
+                    <i class="bi bi-house fs-2 mb-2"></i>
+                    <span class="fw-semibold">Home</span>
+                    <small class="text-muted">Household expenses</small>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="radio" class="btn-check" name="groupType" id="coupleType" value="couple" autocomplete="off"/>
+                  <label class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center p-3" for="coupleType">
+                    <i class="bi bi-heart fs-2 mb-2"></i>
+                    <span class="fw-semibold">Couple</span>
+                    <small class="text-muted">Partner expenses</small>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="radio" class="btn-check" name="groupType" id="otherType" value="other" autocomplete="off"/>
+                  <label class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center p-3" for="otherType">
+                    <i class="bi bi-three-dots fs-2 mb-2"></i>
+                    <span class="fw-semibold">Other</span>
+                    <small class="text-muted">General expenses</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Add Members</label>
+              <div class="input-group">
+                <input type="email" id="memberEmail" class="form-control gradient-input" placeholder="Enter email address"/>
+                <button type="button" class="btn btn-outline-primary" id="addMemberBtn">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+              <div id="membersList" class="mt-3">
+                <p class="text-muted small">No members added yet</p>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-gradient" id="createGroupBtn">
+            <i class="bi bi-check-circle me-2"></i>Create Group
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast -->
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="successToast" class="toast" role="alert">
+      <div class="toast-header bg-success text-white">
+        <i class="bi bi-check-circle me-2"></i>
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body" id="toastMessage">Success!</div>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const API_BASE = 'http://localhost:4000/api';
+
+    // Auth guard and personalization
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      if (!token) return (window.location.href = 'login.html');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const welcomeEl = document.getElementById('welcomeTitle');
+      const navUser = document.getElementById('navUserName');
+      if (welcomeEl && user.name) welcomeEl.textContent = `Welcome back, ${user.name}!`;
+      if (navUser && user.name) navUser.textContent = user.name;
+    });
+
+    // Authenticated fetch helper
+    async function apiFetch(path, options = {}) {
+      const token = localStorage.getItem('token');
+      const headers = Object.assign(
+        { 'Content-Type': 'application/json' },
+        options.headers || {},
+        token ? { Authorization: `Bearer ${token}` } : {}
+      );
+      const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || 'Request failed');
+      return data;
+    }
+
+    // Fix for initial wallet badge load and localStorage update
+    document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const me = await apiFetch('/auth/me');
+    if (me?.user?.walletBalance != null) {
+      const badge = document.getElementById('walletBadge');
+      if (badge) badge.textContent = `Wallet: ₹${Number(me.user.walletBalance).toFixed(0)}`;
+      let user = JSON.parse(localStorage.getItem('user') || '{}');
+      user.walletBalance = me.user.walletBalance;
+      user.name = me.user.name; // keep fresh
+      user.email = me.user.email;
+      user.id = me.user.id;
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  } catch (e) {
+    console.warn('auth/me failed:', e.message);
+  }
+});
+
+
+    // Add Money handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const addBtn = document.getElementById('addWalletBtn');
+      const amountInput = document.getElementById('addWalletAmount');
+      if (!addBtn || !amountInput) return;
+
+      addBtn.addEventListener('click', async () => {
+        const amt = Number(amountInput.value || 0);
+        if (!Number.isFinite(amt) || amt <= 0) return alert('Enter a positive amount');
+        try {
+          const res = await apiFetch('/wallet/add', {
+            method: 'POST',
+            body: JSON.stringify({ amount: amt })
+          });
+          const badge = document.getElementById('walletBadge');
+          if (badge) badge.textContent = `Wallet: ₹${Number(res.walletBalance || 0).toFixed(0)}`;
+          // Update localStorage user.walletBalance with response from add API
+          let user = JSON.parse(localStorage.getItem('user') || '{}');
+          user.walletBalance = res.walletBalance;
+          localStorage.setItem('user', JSON.stringify(user));
+
+          amountInput.value = '';
+          showSuccessToast('Money added to wallet');
+        } catch (e) {
+          alert(e.message || 'Failed to add money');
+        }
+      });
+    });
+
+    // Dark mode stub
+    document.addEventListener('DOMContentLoaded', () => {
+      const darkToggle = document.getElementById('darkModeToggle');
+      if (darkToggle) {
+        darkToggle.addEventListener('click', () => {
+          console.log('Dark mode toggle clicked');
+        });
+      }
+    });
+
+    // Logout
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = 'login.html';
+        });
+      }
+    });
+
+    // Dashboard/Groups data
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const summary = await apiFetch('/summary');
+        document.getElementById('totalOwed').textContent = `₹${(summary.youAreOwed || 0).toFixed(2)}`;
+        document.getElementById('totalOwes').textContent = `₹${(summary.youOwe || 0).toFixed(2)}`;
+        document.getElementById('totalGroups').textContent = String(summary.totalGroups || 0);
+        const g = await apiFetch('/groups');
+       renderGroups(g || []); // Backend returns array directly, not wrapped in object
+
+      } catch (e) {
+        console.error(e);
+        alert('Failed to load dashboard');
+      }
+    });
+
+    function typeToIcon(t) {
+      if (t === 'trip') return 'bi-airplane';
+      if (t === 'home') return 'bi-house';
+      if (t === 'couple') return 'bi-heart';
+      return 'bi-people';
+    }
+
+    function renderGroups(groups) {
+      const list = document.getElementById('groupsList');
+      list.innerHTML = '';
+      if (!groups.length) {
+        list.innerHTML = '<div class="col-12 text-muted">No groups yet</div>';
+        return;
+      }
+      for (const g of groups) {
+        const youAreOwed = Number(g.youAreOwed || 0);
+        const youOwe = Number(g.youOwe || 0);
+        const owedText =
+          youAreOwed > 0 ? `+₹${youAreOwed.toFixed(2)}`
+                         : youOwe > 0 ? `-₹${youOwe.toFixed(2)}`
+                                      : '₹0.00';
+        const owedClass =
+          youAreOwed > 0 ? 'text-success'
+                         : youOwe > 0 ? 'text-danger'
+                                      : 'text-muted';
+        const progressWidth =
+          youAreOwed > 0 ? 70 : youOwe > 0 ? 70 : 100;
+        const progressClass =
+          youAreOwed > 0 ? 'bg-success'
+                         : youOwe > 0 ? 'bg-danger'
+                                      : 'bg-secondary';
+        const typeIcon = typeToIcon(g.type);
+        const lastActivity = g.lastActivity ? new Date(g.lastActivity).toLocaleString() : '—';
+        const col = document.createElement('div');
+        col.className = 'col-md-6 col-lg-4';
+        col.innerHTML = `
+          <div class="glass-card p-4 h-100 group-card" onclick="window.location.href='group-detail.html?groupId=${g.id}'">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 50px; height: 50px;">
+                <i class="bi ${typeIcon}"></i>
+              </div>
+              <div>
+                <h5 class="mb-0 fw-bold">${g.name}</h5>
+                <small class="text-muted">${g.memberCount || 0} members</small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="${owedClass} fw-bold">${owedText}</div>
+              <small class="text-muted">${youAreOwed > 0 ? 'You are owed' : youOwe > 0 ? 'You owe' : 'All settled up'}</small>
+            </div>
+            <div class="progress mb-2" style="height: 6px;">
+              <div class="progress-bar ${progressClass}" style="width: ${progressWidth}%"></div>
+            </div>
+            <small class="text-muted">Last activity: ${lastActivity}</small>
+          </div>
+        `;
+        list.appendChild(col);
+      }
+    }
+
+    // Modal helpers
+    function showCreateGroupModal() {
+      const modal = new bootstrap.Modal(document.getElementById('createGroupModal'));
+      modal.show();
+    }
+
+    // Members management in modal
+    let members = [];
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(String(email || '').trim());
+    }
+    function renderMembers() {
+      const membersList = document.getElementById('membersList');
+      membersList.innerHTML = '';
+      if (!members.length) {
+        membersList.innerHTML = '<p class="text-muted small">No members added yet</p>';
+        return;
+      }
+      members.forEach((email, index) => {
+        const div = document.createElement('div');
+        div.className = 'd-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded';
+        div.innerHTML = `
+          <div class="d-flex align-items-center">
+            <i class="bi bi-person-circle me-2"></i>
+            <span>${email}</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-danger" data-index="${index}">
+            <i class="bi bi-x"></i>
+          </button>
+        `;
+        membersList.appendChild(div);
+      });
+      membersList.querySelectorAll('button[data-index]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.getAttribute('data-index'));
+          members.splice(idx, 1);
+          renderMembers();
+        });
+      });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const addMemberBtn = document.getElementById('addMemberBtn');
+      const memberEmailInput = document.getElementById('memberEmail');
+      if (addMemberBtn) {
+        addMemberBtn.addEventListener('click', () => {
+          const email = String(memberEmailInput.value || '').trim().toLowerCase();
+          if (!email) return alert('Please enter an email address');
+          if (!isValidEmail(email)) return alert('Please enter a valid email address');
+          if (members.includes(email)) return alert('This email is already added');
+          members.push(email);
+          renderMembers();
+          memberEmailInput.value = '';
+        });
+      }
+      if (memberEmailInput) {
+        memberEmailInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            addMemberBtn?.click();
+          }
+        });
+      }
+    });
+
+    // Create group
+    document.addEventListener('DOMContentLoaded', () => {
+      const createBtn = document.getElementById('createGroupBtn');
+      if (createBtn) {
+        createBtn.addEventListener('click', async () => {
+          const groupName = String(document.getElementById('newGroupName').value || '').trim();
+          if (!groupName) return alert('Please enter a group name');
+          const groupType = document.querySelector('input[name="groupType"]:checked')?.value || 'other';
+          if (members.length === 0) return alert('Please add at least one member');
+          try {
+            await apiFetch('/groups', {
+              method: 'POST',
+              body: JSON.stringify({ name: groupName, type: groupType, members })
+            });
+            showSuccessToast(`Group "${groupName}" created successfully with ${members.length} member(s)!`);
+            document.getElementById('createGroupForm').reset();
+            members = [];
+            renderMembers();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createGroupModal'));
+            modal?.hide();
+            const g = await apiFetch('/groups');
+            renderGroups(g || []); // Backend returns array directly, not wrapped in object
+
+            const summary = await apiFetch('/summary');
+            document.getElementById('totalOwed').textContent = `₹${(summary.youAreOwed || 0).toFixed(2)}`;
+            document.getElementById('totalOwes').textContent = `₹${(summary.youOwe || 0).toFixed(2)}`;
+            document.getElementById('totalGroups').textContent = String(summary.totalGroups || 0);
+          } catch (e) {
+            alert(e.message || 'Failed to create group');
+          }
+        });
+      }
+    });
+
+    function showSuccessToast(message) {
+      document.getElementById('toastMessage').textContent = message;
+      const toast = new bootstrap.Toast(document.getElementById('successToast'));
+      toast.show();
+    }
+    function showPage(id) {
+      console.log('showPage:', id);
+    }
+  </script>
+</body>
+</html>

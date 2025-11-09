@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Details - SplitEase</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg glass-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold gradient-text" href="index.html">
+                <i class="bi bi-piggy-bank me-2"></i>SplitEase
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="activity.html">
+                            <i class="bi bi-clock-history me-1"></i>Recent Activity
+                        </a>
+                    </li> -->
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="friends.html">
+                            <i class="bi bi-people me-1"></i>Friends
+                        </a>
+                    </li> -->
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <!-- <button id="darkModeToggle" class="dark-toggle me-3 d-flex align-items-center">
+                        <i class="bi bi-moon-fill me-2"></i>
+                        <span>Dark</span>
+                    </button> -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown"
+                            id="navbarUserNameBtn">
+                            <i class="bi bi-person-circle me-1"></i><span id="navbarUserNameSpan">User</span>
+                        </button>
+
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="settings.html"><i
+                                        class="bi bi-gear me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="login.html"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 mt-5 position-relative" style="z-index: 10;">
+
+        <!-- Back Button and Settings -->
+       <!-- Back Button and Settings -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-outline-secondary" onclick="history.back()">
+        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </button>
+    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteGroupModal">
+        <i class="bi bi-trash me-1"></i>Delete Group
+    </button>
+</div>
+
+        </div>
+
+        <!-- Group Header -->
+        <div class="glass-card p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <div class="group-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                        style="width: 80px; height: 80px; font-size: 1.5rem;">
+                        <i class="bi bi-airplane"></i>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h1 class="display-5 fw-bold gradient-text mb-2">Trip to Goa</h1>
+                    <p class="text-muted mb-3">3 members • Trip • Created on March 15, 2025</p>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-success fw-bold h5 mb-0">+$37.50</div>
+                            <small class="text-muted">You are owed overall</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-primary fw-bold h5 mb-0">$195.00</div>
+                            <small class="text-muted">Total group spending</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-info fw-bold h5 mb-0">2</div>
+                            <small class="text-muted">Total expenses</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <!-- Add Expense Form -->
+                <form class="glass-card p-4 mb-4" onsubmit="addExpense(event)">
+                    <h3 class="h4 fw-bold gradient-text mb-4 d-flex align-items-center">
+                        <div class="bg-success rounded-pill me-3" style="width: 4px; height: 30px;"></div>
+                        Add New Expense
+                    </h3>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <input type="text" id="expenseDesc" placeholder="Enter a description" required
+                                class="form-control gradient-input">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="expenseAmount" step="0.01" placeholder="₹0.00" required
+                                class="form-control gradient-input">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Paid by</label>
+                            <select id="paidBySelect" class="form-select gradient-input">
+                                <option value="Harsh">Harsh (You)</option>
+                                <option value="Rahul">Rahul B</option>
+                                <option value="Purva">Purva Patel</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Category</label>
+                            <select id="categorySelect" class="form-select gradient-input">
+
+                                <option value="general">General</option>
+                                <option value="food">Food & Dining</option>
+                                <option value="transport">Transportation</option>
+                                <option value="accommodation">Accommodation</option>
+                                <option value="entertainment">Entertainment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="splitEqually" checked
+                                onchange="toggleSplitOptions()">
+                            <label class="form-check-label fw-semibold" for="splitEqually">Split equally between all
+                                members</label>
+                        </div>
+                    </div> -->
+
+                    <!-- Custom Split Options (Hidden by default) -->
+<div id="customSplitOptions" style="display: none;">
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Split Details</label>
+        <div id="customSplitMembersList" class="row g-2">
+            <!-- Members will be dynamically loaded here -->
+        </div>
+    </div>
+</div>
+
+
+                    <button type="submit" class="btn btn-gradient w-100 py-3 fw-bold">
+                        <i class="bi bi-plus-circle me-2"></i>Add Expense
+                    </button>
+                </form>
+
+                <!-- Expenses List -->
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <!-- <h3 class="h4 fw-bold gradient-text d-flex align-items-center mb-0">
+                            <div class="bg-info rounded-pill me-3" style="width: 4px; height: 30px;"></div>
+                            Recent Expenses
+                        </h3>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown">
+                                <i class="bi bi-filter me-1"></i>Filter
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">All expenses</a></li>
+                                <li><a class="dropdown-item" href="#">Paid by me</a></li>
+                                <li><a class="dropdown-item" href="#">I owe</a></li>
+                                <li><a class="dropdown-item" href="#">I'm owed</a></li>
+                            </ul>
+                        </div> -->
+                    </div>
+
+                    <div id="expensesList" class="row g-3">
+        <!-- Expenses will be dynamically loaded here -->
+    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Group Members -->
+                <div class="glass-card p-4 mb-4">
+                    <h3 class="h5 fw-bold gradient-text mb-3 d-flex align-items-center">
+                        <div class="bg-purple rounded-pill me-3" style="width: 4px; height: 25px; background: #6f42c1;">
+                        </div>
+                        Group Members
+                    </h3>
+                   <div class="list-group list-group-flush">
+        <!-- Members will be dynamically loaded here -->
+    </div>
+                </div>
+
+                <!-- Balance Summary -->
+                <div class="glass-card p-4 mb-4">
+                    <h3 class="h5 fw-bold gradient-text mb-3 d-flex align-items-center">
+                        <div class="bg-warning rounded-pill me-3" style="width: 4px; height: 25px;"></div>
+                        Balance Summary
+                    </h3>
+                    <div class="balance-summary">
+        <!-- Balance info will be dynamically loaded here -->
+    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card p-4">
+                    <h3 class="h5 fw-bold gradient-text mb-3">Quick Actions</h3>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#walletPayModal">
+                            <i class="bi bi-cash-coin me-2"></i>Pay from Wallet
+                        </button>
+
+
+                        <!-- <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                            <i class="bi bi-person-plus me-2"></i>Add Member
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div class="modal fade" id="addMemberModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title gradient-text fw-bold">Add Member to Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email Address</label>
+                            <input type="email" class="form-control gradient-input" placeholder="Enter member's email">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Personal Message (Optional)</label>
+                            <textarea class="form-control gradient-input" rows="3"
+                                placeholder="Add a personal invitation message..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-gradient">Send Invitation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settle Up Modal -->
+    <div class="modal fade" id="settleUpModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title gradient-text fw-bold">Settle Up</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">From</label>
+                            <select class="form-select gradient-input">
+                                <option>Rahul B</option>
+                                <option>Purva Patel</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">To</label>
+                            <select class="form-select gradient-input">
+                                <option>Harsh (You)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Amount</label>
+                            <input type="number" class="form-control gradient-input" placeholder="$0.00" step="0.01">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-gradient">Record Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Group Modal -->
+    <div class="modal fade" id="deleteGroupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-danger fw-bold">Delete Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">Are you sure?</h5>
+                        <p class="text-muted">This action cannot be undone. All expenses and data for this group will be
+                            permanently deleted.</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteGroup()">Delete Group</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="successToast" class="toast" role="alert">
+            <div class="toast-header bg-success text-white">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Success!
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="walletPayModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold gradient-text">Pay from Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Payee</label>
+                        <select id="walletPayee" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Amount</label>
+                        <input type="number" min="1" id="walletAmount" class="form-control"
+                            placeholder="Enter amount" />
+                        <div class="form-text" id="walletMaxHint">Max payable: ₹0</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Note (optional)</label>
+                        <input type="text" id="walletNote" class="form-control"
+                            placeholder="e.g. Settle dinner split" />
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="walletPaySubmit">
+                        <i class="bi bi-check2-circle me-1"></i>Pay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+   <script>
+const API_BASE = 'http://localhost:4000/api';
+
+function toggleSplitOptions() {
+    const splitEqually = document.getElementById('splitEqually');
+    const customOptions = document.getElementById('customSplitOptions');
+    if (splitEqually.checked) {
+        customOptions.style.display = 'none';
+    } else {
+        customOptions.style.display = 'block';
+    }
+}
+
+async function addExpense(event) {
+    event.preventDefault();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    const desc = document.getElementById('expenseDesc').value.trim();
+    const amount = parseFloat(document.getElementById('expenseAmount').value);
+    const paidBy = document.getElementById('paidBySelect').value;
+    const category = document.getElementById('categorySelect').value || 'general';
+    
+    // Get all members for equal split
+    const paidBySelect = document.getElementById('paidBySelect');
+    const allMembers = Array.from(paidBySelect.options).map(opt => opt.value);
+    const sharePerMember = amount / allMembers.length;
+    const splits = allMembers.map(memberId => ({ userId: memberId, share: sharePerMember }));
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE}/expenses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ groupId, description: desc, amount, paidBy, category, splits })
+        });
+        
+        const data = await response.json();
+        if (!response.ok) return alert(data.message || 'Failed to add expense');
+        
+        document.getElementById('toastMessage').textContent = `Expense "${desc}" added successfully!`;
+        const toast = new bootstrap.Toast(document.getElementById('successToast'));
+        toast.show();
+        event.target.reset();
+        await loadGroupData(); // Refresh data
+    } catch (err) {
+        alert('Failed to add expense: ' + err.message);
+    }
+}
+
+async function loadGroupData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    if (!groupId) return alert('Missing groupId in URL');
+
+    try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE}/groups/${groupId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const group = await res.json();
+        if (!res.ok) throw new Error(group.message || 'Failed to load group');
+
+        // Update group name and info
+        document.querySelector('h1.display-5').textContent = group.name || 'Group';
+        const memberCount = Array.isArray(group.members) ? group.members.length : 0;
+        document.querySelector('.text-muted.mb-3').textContent = 
+            `${memberCount} members • ${group.type || ''} • Created on ${new Date(group.createdAt).toLocaleDateString()}`;
+
+        // Update balances
+        document.querySelector('.col-md-4:nth-child(1) .h5').textContent = `₹${(group.youAreOwed || 0).toFixed(2)}`;
+        document.querySelector('.col-md-4:nth-child(2) .h5').textContent = `₹${(group.totalSpent || 0).toFixed(2)}`;
+        document.querySelector('.col-md-4:nth-child(3) .h5').textContent = `${group.pendingExpensesCount || 0}`;
+
+        // Populate Paid By dropdown
+        const paidBySelect = document.getElementById('paidBySelect');
+        paidBySelect.innerHTML = '';
+        const members = Array.isArray(group.members) ? group.members : [];
+        members.forEach(m => {
+            paidBySelect.innerHTML += `<option value="${m._id || m.id}">${m.name}</option>`;
+        });
+
+        // Render expenses
+        const expensesList = document.getElementById('expensesList');
+        expensesList.innerHTML = '';
+        const expenses = Array.isArray(group.expenses) ? group.expenses : [];
+        expenses.forEach(e => {
+            expensesList.innerHTML += `
+                <div class="col-12">
+                    <div class="glass-card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-currency-rupee text-white"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 fw-bold">${e.description}</h6>
+                                    <small class="text-muted">Paid by ${e.paidBy?.name || e.paidBy} • ${e.category || 'General'}</small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">₹${e.amount.toFixed(2)}</div>
+                                <small class="text-muted">${new Date(e.createdAt).toLocaleDateString()}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Render members
+        const membersList = document.querySelector('.list-group.list-group-flush');
+        membersList.innerHTML = '';
+        members.forEach(m => {
+            membersList.innerHTML += `
+                <div class="list-group-item bg-transparent border-0 px-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px;">${m.name[0]}</div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0 fw-bold">${m.name}</h6>
+                            <small class="text-muted">${m.email}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Render balance summary
+        const balanceSummary = document.querySelector('.balance-summary');
+        balanceSummary.innerHTML = '';
+        const balances = Array.isArray(group.balanceSummary) ? group.balanceSummary : [];
+        balances.forEach(b => {
+            balanceSummary.innerHTML += `
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                    <span>${b.text}</span>
+                    <span class="text-success fw-bold">${b.amount >= 0 ? '+' : ''}₹${b.amount.toFixed(2)}</span>
+                </div>
+            `;
+        });
+    } catch (e) {
+        alert('Failed to load group: ' + e.message);
+    }
+}
+function populateCustomSplitOptions(members) {
+    const container = document.getElementById('customSplitMembersList');
+    container.innerHTML = '';
+    members.forEach((m, index) => {
+        container.innerHTML += `
+            <div class="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input split-member-check" type="checkbox" 
+                           id="splitMember${index}" value="${m._id || m.id}" checked>
+                    <label class="form-check-label" for="splitMember${index}">${m.name}</label>
+                </div>
+                <input type="number" class="form-control form-control-sm mt-1 split-amount" 
+                       placeholder="Amount" step="0.01" data-member-id="${m._id || m.id}">
+            </div>
+        `;
+    });
+}
+async function deleteGroup() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    
+    if (!groupId) return alert('No group ID found');
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE}/groups/${groupId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await response.json();
+        if (!response.ok) return alert(data.message || 'Failed to delete group');
+        
+        const modalEl = document.getElementById('deleteGroupModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+        alert('Group deleted successfully');
+        window.location.href = 'index.html';
+    } catch (err) {
+        alert('Error deleting group: ' + err.message);
+    }
+}
+// Initialize wallet payment UI when modal opens
+async function initWalletPayUI() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const groupId = urlParams.get('groupId');
+        
+        // Get group details to find who user owes
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE}/groups/${groupId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const group = await res.json();
+        
+        // Get current user
+        const meRes = await fetch(`${API_BASE}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const me = await meRes.json();
+        const currentUserId = me?.user?.id || me?.user?._id;
+        
+        // Calculate who user owes money to
+        const balances = {};
+        group.members.forEach(m => {
+            balances[String(m._id)] = 0;
+        });
+        
+        (group.expenses || []).forEach(expense => {
+            const paidById = String(expense.paidBy._id || expense.paidBy);
+            balances[paidById] = (balances[paidById] || 0) + expense.amount;
+            
+            if (expense.splits) {
+                expense.splits.forEach(split => {
+                    const userId = String(split.userId);
+                    balances[userId] = (balances[userId] || 0) - split.share;
+                });
+            }
+        });
+        
+        // Find members user owes money to (negative balance)
+        const currentBalance = balances[String(currentUserId)] || 0;
+        const payeeSel = document.getElementById('walletPayee');
+        payeeSel.innerHTML = '';
+        
+        const membersToPayBack = group.members.filter(m => {
+            const memberId = String(m._id);
+            return memberId !== String(currentUserId) && balances[memberId] > 0 && currentBalance < 0;
+        });
+        
+        if (membersToPayBack.length === 0) {
+            payeeSel.innerHTML = '<option value="">No pending payments</option>';
+            document.getElementById('walletPaySubmit').disabled = true;
+            return;
+        }
+        
+        membersToPayBack.forEach(m => {
+            const amount = Math.min(balances[String(m._id)], Math.abs(currentBalance));
+            payeeSel.innerHTML += `<option value="${m._id}">${m.name} (You owe ₹${amount.toFixed(2)})</option>`;
+        });
+        
+        // Update max hint on payee change
+        const amountInput = document.getElementById('walletAmount');
+        const maxHint = document.getElementById('walletMaxHint');
+        
+        function updateMaxHint() {
+            const selectedMemberId = payeeSel.value;
+            if (!selectedMemberId) return;
+            
+            const selectedMember = group.members.find(m => String(m._id) === selectedMemberId);
+            const maxAmount = Math.min(balances[selectedMemberId], Math.abs(currentBalance));
+            maxHint.textContent = `Max payable: ₹${maxAmount.toFixed(2)}`;
+            amountInput.max = maxAmount;
+        }
+        
+        payeeSel.addEventListener('change', updateMaxHint);
+        updateMaxHint();
+        document.getElementById('walletPaySubmit').disabled = false;
+        
+    } catch (e) {
+        console.error('Wallet init error:', e);
+        alert('Failed to load payment details');
+    }
+}
+
+// Handle wallet payment submission
+async function handleWalletPayment() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    const payeeId = document.getElementById('walletPayee').value;
+    const amount = parseFloat(document.getElementById('walletAmount').value);
+    const note = document.getElementById('walletNote').value || 'Payment settlement';
+    
+    if (!payeeId) return alert('Please select who to pay');
+    if (!amount || amount <= 0) return alert('Please enter a valid amount');
+    
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE}/wallet/pay`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ groupId, payeeId, amount, note })
+        });
+        
+        const data = await response.json();
+        if (!response.ok) return alert(data.message || 'Payment failed');
+        
+        // Close modal
+        const modalEl = document.getElementById('walletPayModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+        alert('Payment successful!');
+        await loadGroupData(); // Refresh page
+        
+    } catch (err) {
+        alert('Payment error: ' + err.message);
+    }
+}
+
+// Attach event listeners
+document.getElementById('walletPayModal')?.addEventListener('show.bs.modal', initWalletPayUI);
+document.getElementById('walletPaySubmit')?.addEventListener('click', handleWalletPayment);
+const navbarUserName = document.getElementById('navbarUserNameSpan');
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (navbarUserName && user.name) {
+    navbarUserName.textContent = user.name;
+}
+
+
+
+// Load data on page load
+document.addEventListener('DOMContentLoaded', loadGroupData);
+</script>
+
+</body>
+
+</html>
