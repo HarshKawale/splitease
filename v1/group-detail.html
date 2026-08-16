@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Details - SplitEase</title>
+    <meta name="description" content="View and manage group expenses, balances, and settlements in SplitEase."/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg glass-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold gradient-text" href="index.html">
+                <i class="bi bi-piggy-bank me-2"></i>SplitEase
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house me-1"></i>Dashboard
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="dark-toggle d-flex align-items-center" title="Toggle dark mode">
+                        <i class="bi bi-moon-fill me-2" id="darkModeIcon"></i>
+                        <span id="darkModeLabel">Dark</span>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button"
+                            data-bs-toggle="dropdown" id="navbarUserNameBtn">
+                            <i class="bi bi-person-circle me-1"></i><span id="navbarUserNameSpan">User</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Main Content Container (fixed: was broken before) ── -->
+    <div class="container py-5 mt-5 position-relative" style="z-index: 10;">
+
+        <!-- Back Button and Delete -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <button class="btn btn-outline-secondary" onclick="history.back()">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+            </button>
+            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteGroupModal">
+                <i class="bi bi-trash me-1"></i>Delete Group
+            </button>
+        </div>
+
+        <!-- Group Header (dynamic IDs added) -->
+        <div class="glass-card p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <div class="group-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                        style="width: 80px; height: 80px; font-size: 1.5rem;" id="groupIconEl">
+                        <i class="bi bi-people" id="groupIconI"></i>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h1 class="display-5 fw-bold gradient-text mb-2" id="groupNameEl">Loading…</h1>
+                    <p class="text-muted mb-3" id="groupMetaEl">—</p>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="fw-bold h5 mb-0" id="groupBalanceEl">—</div>
+                            <small class="text-muted" id="groupBalanceLabelEl">Your balance</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-primary fw-bold h5 mb-0" id="groupTotalSpentEl">—</div>
+                            <small class="text-muted">Total group spending</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-info fw-bold h5 mb-0" id="groupExpenseCountEl">—</div>
+                            <small class="text-muted">Total expenses</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <!-- Add Expense Form -->
+                <form class="glass-card p-4 mb-4" onsubmit="addExpense(event)">
+                    <h3 class="h4 fw-bold gradient-text mb-4 d-flex align-items-center">
+                        <div class="bg-success rounded-pill me-3" style="width: 4px; height: 30px;"></div>
+                        Add New Expense
+                    </h3>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <input type="text" id="expenseDesc" placeholder="Enter a description" required
+                                class="form-control gradient-input">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="expenseAmount" step="0.01" min="0.01" placeholder="₹0.00" required
+                                class="form-control gradient-input">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Paid by</label>
+                            <select id="paidBySelect" class="form-select gradient-input"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Category</label>
+                            <select id="categorySelect" class="form-select gradient-input">
+                                <option value="general">General</option>
+                                <option value="food">Food &amp; Dining</option>
+                                <option value="transport">Transportation</option>
+                                <option value="accommodation">Accommodation</option>
+                                <option value="entertainment">Entertainment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 py-3 fw-bold">
+                        <i class="bi bi-plus-circle me-2"></i>Add Expense
+                    </button>
+                </form>
+
+                <!-- Expenses List -->
+                <div class="glass-card p-4">
+                    <h3 class="h4 fw-bold gradient-text mb-4 d-flex align-items-center">
+                        <div class="bg-info rounded-pill me-3" style="width: 4px; height: 30px;"></div>
+                        Recent Expenses
+                    </h3>
+                    <div id="expensesList" class="row g-3">
+                        <!-- Expenses rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Group Members -->
+                <div class="glass-card p-4 mb-4">
+                    <h3 class="h5 fw-bold gradient-text mb-3 d-flex align-items-center">
+                        <div class="rounded-pill me-3" style="width:4px;height:25px;background:#6f42c1;"></div>
+                        Group Members
+                    </h3>
+                    <div class="list-group list-group-flush" id="membersList">
+                        <!-- Members rendered here -->
+                    </div>
+                </div>
+
+                <!-- Balance Summary -->
+                <div class="glass-card p-4 mb-4">
+                    <h3 class="h5 fw-bold gradient-text mb-3 d-flex align-items-center">
+                        <div class="bg-warning rounded-pill me-3" style="width:4px;height:25px;"></div>
+                        Balance Summary
+                    </h3>
+                    <div class="balance-summary" id="balanceSummary">
+                        <!-- Balance info rendered here -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card p-4">
+                    <h3 class="h5 fw-bold gradient-text mb-3">Quick Actions</h3>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#walletPayModal">
+                            <i class="bi bi-cash-coin me-2"></i>Pay from Wallet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container -->
+
+    <!-- Delete Group Modal -->
+    <div class="modal fade" id="deleteGroupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-danger fw-bold">Delete Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">Are you sure?</h5>
+                        <p class="text-muted">This action cannot be undone. All expenses and data for this group will be permanently deleted.</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteGroup()">Delete Group</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wallet Pay Modal -->
+    <div class="modal fade" id="walletPayModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold gradient-text">Pay from Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Payee</label>
+                        <select id="walletPayee" class="form-select gradient-input"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Amount</label>
+                        <input type="number" min="1" id="walletAmount" class="form-control gradient-input"
+                            placeholder="Enter amount" />
+                        <div class="form-text" id="walletMaxHint">Max payable: ₹0</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Note (optional)</label>
+                        <input type="text" id="walletNote" class="form-control gradient-input"
+                            placeholder="e.g. Settle dinner split" />
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="walletPaySubmit">
+                        <i class="bi bi-check2-circle me-1"></i>Pay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="successToast" class="toast" role="alert">
+            <div class="toast-header bg-success text-white">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">Success!</div>
+        </div>
+        <div id="errorToast" class="toast" role="alert">
+            <div class="toast-header bg-danger text-white">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="errorToastMessage">Something went wrong.</div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+const API_BASE = 'http://localhost:4000/api';
+
+// ── Toast Helpers ──────────────────────────────────────────────────────────
+function showToast(message) {
+    document.getElementById('toastMessage').textContent = message;
+    new bootstrap.Toast(document.getElementById('successToast')).show();
+}
+function showError(message) {
+    document.getElementById('errorToastMessage').textContent = message;
+    new bootstrap.Toast(document.getElementById('errorToast')).show();
+}
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+function authHeaders() {
+    const token = localStorage.getItem('token');
+    return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+}
+async function apiFetch(path, options = {}) {
+    const res = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: { ...authHeaders(), ...(options.headers || {}) }
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || 'Request failed');
+    return data;
+}
+
+// ── Dark Mode ──────────────────────────────────────────────────────────────
+function applyTheme(dark) {
+    document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+    document.getElementById('darkModeIcon').className = dark ? 'bi bi-sun-fill me-2' : 'bi bi-moon-fill me-2';
+    document.getElementById('darkModeLabel').textContent = dark ? 'Light' : 'Dark';
+}
+
+// ── Group type → icon ──────────────────────────────────────────────────────
+function typeToIcon(t) {
+    if (t === 'trip') return 'bi-airplane';
+    if (t === 'home') return 'bi-house';
+    if (t === 'couple') return 'bi-heart';
+    return 'bi-people';
+}
+
+// ── Category → icon ───────────────────────────────────────────────────────
+function categoryIcon(cat) {
+    const map = { food: 'bi-cup-hot', transport: 'bi-car-front', accommodation: 'bi-building', entertainment: 'bi-controller' };
+    return map[cat] || 'bi-currency-rupee';
+}
+
+// ── Add Expense ────────────────────────────────────────────────────────────
+async function addExpense(event) {
+    event.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    const desc = document.getElementById('expenseDesc').value.trim();
+    const amount = parseFloat(document.getElementById('expenseAmount').value);
+    const paidBy = document.getElementById('paidBySelect').value;
+    const category = document.getElementById('categorySelect').value || 'general';
+
+    // Equal split among all members
+    const paidBySelect = document.getElementById('paidBySelect');
+    const allMembers = Array.from(paidBySelect.options).map(opt => opt.value);
+    const sharePerMember = amount / allMembers.length;
+    const splits = allMembers.map(memberId => ({ userId: memberId, share: sharePerMember }));
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE}/expenses`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({ groupId, description: desc, amount, paidBy, category, splits })
+        });
+        const data = await response.json();
+        if (!response.ok) return showError(data.message || 'Failed to add expense');
+
+        showToast(`Expense "${desc}" added successfully!`);
+        event.target.reset();
+        await loadGroupData();
+    } catch (err) {
+        showError('Failed to add expense: ' + err.message);
+    }
+}
+
+// ── Load Group Data ────────────────────────────────────────────────────────
+async function loadGroupData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    if (!groupId) { showError('Missing groupId in URL'); return; }
+
+    try {
+        const group = await apiFetch(`/groups/${groupId}`);
+
+        // ── Update group header ──
+        document.getElementById('groupNameEl').textContent = group.name || 'Group';
+        const memberCount = Array.isArray(group.members) ? group.members.length : 0;
+        document.getElementById('groupMetaEl').textContent =
+            `${memberCount} members • ${group.type || ''} • Created on ${new Date(group.createdAt).toLocaleDateString()}`;
+
+        // Group icon
+        document.getElementById('groupIconI').className = `bi ${typeToIcon(group.type)}`;
+
+        // Balance
+        const youAreOwed = Number(group.youAreOwed || 0);
+        const balanceEl = document.getElementById('groupBalanceEl');
+        const balanceLabelEl = document.getElementById('groupBalanceLabelEl');
+        if (youAreOwed > 0) {
+            balanceEl.textContent = `+₹${youAreOwed.toFixed(2)}`;
+            balanceEl.className = 'text-success fw-bold h5 mb-0';
+            balanceLabelEl.textContent = 'You are owed';
+        } else if (youAreOwed < 0) {
+            balanceEl.textContent = `-₹${Math.abs(youAreOwed).toFixed(2)}`;
+            balanceEl.className = 'text-danger fw-bold h5 mb-0';
+            balanceLabelEl.textContent = 'You owe';
+        } else {
+            balanceEl.textContent = '₹0.00';
+            balanceEl.className = 'text-muted fw-bold h5 mb-0';
+            balanceLabelEl.textContent = 'All settled up';
+        }
+
+        document.getElementById('groupTotalSpentEl').textContent = `₹${(group.totalSpent || 0).toFixed(2)}`;
+        document.getElementById('groupExpenseCountEl').textContent = String(group.pendingExpensesCount || 0);
+
+        // ── Populate Paid By dropdown ──
+        const paidBySelect = document.getElementById('paidBySelect');
+        const currentUserId = JSON.parse(localStorage.getItem('user') || '{}').id;
+        paidBySelect.innerHTML = '';
+        const members = Array.isArray(group.members) ? group.members : [];
+        members.forEach(m => {
+            const label = String(m._id || m.id) === String(currentUserId) ? `${m.name} (You)` : m.name;
+            paidBySelect.innerHTML += `<option value="${m._id || m.id}">${label}</option>`;
+        });
+
+        // ── Render expenses ──
+        const expensesList = document.getElementById('expensesList');
+        expensesList.innerHTML = '';
+        const expenses = Array.isArray(group.expenses) ? group.expenses : [];
+        if (!expenses.length) {
+            expensesList.innerHTML = `<div class="col-12 text-center py-4 text-muted">
+                <i class="bi bi-receipt fs-2 mb-2 d-block"></i>No expenses yet. Add one above!</div>`;
+        } else {
+            expenses.forEach(e => {
+                const isPayment = e.kind === 'payment';
+                const icon = isPayment ? 'bi-arrow-left-right' : categoryIcon(e.category);
+                const bgColor = isPayment ? 'bg-success' : 'bg-warning';
+                expensesList.innerHTML += `
+                    <div class="col-12">
+                        <div class="glass-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="${bgColor} rounded-circle d-flex align-items-center justify-content-center me-3 text-white" style="width:40px;height:40px;">
+                                        <i class="bi ${icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">${e.description}</h6>
+                                        <small class="text-muted">Paid by ${e.paidBy?.name || 'Unknown'} • ${e.category || 'General'}</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold ${isPayment ? 'text-success' : ''}">₹${e.amount.toFixed(2)}</div>
+                                    <small class="text-muted">${new Date(e.createdAt).toLocaleDateString()}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ── Render members ──
+        const membersList = document.getElementById('membersList');
+        membersList.innerHTML = '';
+        members.forEach(m => {
+            const initials = m.name ? m.name[0].toUpperCase() : '?';
+            membersList.innerHTML += `
+                <div class="list-group-item bg-transparent border-0 px-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-3 fw-bold" style="width:40px;height:40px;">${initials}</div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0 fw-bold">${m.name}</h6>
+                            <small class="text-muted">${m.email}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // ── Render balance summary (with proper coloring) ──
+        const balanceSummaryEl = document.getElementById('balanceSummary');
+        balanceSummaryEl.innerHTML = '';
+        const balances = Array.isArray(group.balanceSummary) ? group.balanceSummary : [];
+        if (!balances.length) {
+            balanceSummaryEl.innerHTML = '<p class="text-muted text-center small mb-0"><i class="bi bi-check-circle me-1 text-success"></i>All settled up!</p>';
+        } else {
+            balances.forEach(b => {
+                const amtClass = b.amount >= 0 ? 'text-danger' : 'text-success'; // "X owes Y" → X pays → negative for X
+                balanceSummaryEl.innerHTML += `
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                        <span class="small">${b.text}</span>
+                        <span class="${amtClass} fw-bold">₹${Math.abs(b.amount).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+        }
+
+    } catch (e) {
+        showError('Failed to load group: ' + e.message);
+    }
+}
+
+// ── Delete Group ───────────────────────────────────────────────────────────
+async function deleteGroup() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    if (!groupId) { showError('No group ID found'); return; }
+
+    try {
+        await apiFetch(`/groups/${groupId}`, { method: 'DELETE' });
+        bootstrap.Modal.getInstance(document.getElementById('deleteGroupModal'))?.hide();
+        showToast('Group deleted successfully');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+    } catch (err) {
+        showError(err.message || 'Error deleting group');
+    }
+}
+
+// ── Wallet Payment UI ──────────────────────────────────────────────────────
+async function initWalletPayUI() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const groupId = urlParams.get('groupId');
+
+        const [group, me] = await Promise.all([
+            apiFetch(`/groups/${groupId}`),
+            apiFetch('/auth/me')
+        ]);
+        const currentUserId = String(me?.user?.id || me?.user?._id);
+
+        // Calculate net balances from expenses
+        const balances = {};
+        group.members.forEach(m => { balances[String(m._id)] = 0; });
+        (group.expenses || []).forEach(expense => {
+            const paidById = String(expense.paidBy._id || expense.paidBy);
+            balances[paidById] = (balances[paidById] || 0) + expense.amount;
+            if (expense.splits) {
+                expense.splits.forEach(split => {
+                    const uid = String(split.userId);
+                    balances[uid] = (balances[uid] || 0) - split.share;
+                });
+            }
+        });
+
+        const currentBalance = balances[currentUserId] || 0;
+        const payeeSel = document.getElementById('walletPayee');
+        payeeSel.innerHTML = '';
+
+        const membersToPayBack = group.members.filter(m => {
+            const memberId = String(m._id);
+            return memberId !== currentUserId && balances[memberId] > 0 && currentBalance < 0;
+        });
+
+        if (membersToPayBack.length === 0) {
+            payeeSel.innerHTML = '<option value="">No pending payments</option>';
+            document.getElementById('walletPaySubmit').disabled = true;
+            return;
+        }
+
+        membersToPayBack.forEach(m => {
+            const amount = Math.min(balances[String(m._id)], Math.abs(currentBalance));
+            payeeSel.innerHTML += `<option value="${m._id}">${m.name} (You owe ₹${amount.toFixed(2)})</option>`;
+        });
+
+        const amountInput = document.getElementById('walletAmount');
+        const maxHint = document.getElementById('walletMaxHint');
+        function updateMaxHint() {
+            const selectedMemberId = payeeSel.value;
+            if (!selectedMemberId) return;
+            const maxAmount = Math.min(balances[selectedMemberId] || 0, Math.abs(currentBalance));
+            maxHint.textContent = `Max payable: ₹${maxAmount.toFixed(2)}`;
+            amountInput.max = maxAmount;
+        }
+        payeeSel.addEventListener('change', updateMaxHint);
+        updateMaxHint();
+        document.getElementById('walletPaySubmit').disabled = false;
+
+    } catch (e) {
+        console.error('Wallet init error:', e);
+        showError('Failed to load payment details');
+    }
+}
+
+// ── Handle Wallet Payment Submission ──────────────────────────────────────
+async function handleWalletPayment() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('groupId');
+    const payeeId = document.getElementById('walletPayee').value;
+    const amount = parseFloat(document.getElementById('walletAmount').value);
+    const note = document.getElementById('walletNote').value || 'Payment settlement';
+
+    if (!payeeId) return showError('Please select who to pay');
+    if (!amount || amount <= 0) return showError('Please enter a valid amount');
+
+    try {
+        await apiFetch('/wallet/pay', {
+            method: 'POST',
+            body: JSON.stringify({ groupId, payeeId, amount, note })
+        });
+        bootstrap.Modal.getInstance(document.getElementById('walletPayModal'))?.hide();
+        showToast('Payment successful! Wallet updated.');
+        await loadGroupData();
+    } catch (err) {
+        showError(err.message || 'Payment error');
+    }
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+    // Auth guard
+    const token = localStorage.getItem('token');
+    if (!token) return (window.location.href = 'login.html');
+
+    // Dark mode
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    applyTheme(isDark);
+    document.getElementById('darkModeToggle').addEventListener('click', () => {
+        const nowDark = document.documentElement.getAttribute('data-bs-theme') !== 'dark';
+        localStorage.setItem('darkMode', nowDark);
+        applyTheme(nowDark);
+    });
+
+    // Logout (properly clears localStorage)
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+    });
+
+    // Nav username
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const navbarUserName = document.getElementById('navbarUserNameSpan');
+    if (navbarUserName && user.name) navbarUserName.textContent = user.name;
+
+    // Wallet modal events
+    document.getElementById('walletPayModal')?.addEventListener('show.bs.modal', initWalletPayUI);
+    document.getElementById('walletPaySubmit')?.addEventListener('click', handleWalletPayment);
+
+    // Load data
+    await loadGroupData();
+});
+    </script>
+
+</body>
+</html>
