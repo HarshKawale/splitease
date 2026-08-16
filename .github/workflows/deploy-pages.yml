@@ -8,23 +8,18 @@ on:
 permissions:
   contents: read
   pages: write
-  id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload Pages artifact (SplitEase/v1)
-        uses: actions/upload-pages-artifact@v2
+      - name: Deploy SplitEase/v1 to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: 'SplitEase/v1'
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./SplitEase/v1
+          publish_branch: gh-pages
+          # keep_empty_commit: true   # uncomment if you want a commit even if nothing changed
